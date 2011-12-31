@@ -45,9 +45,11 @@ MatrixXf PcaSolver::calculateCovarianceMatrix(const MatrixXf &m)
 {
     MatrixXf result = (m * m.transpose());
     int samplesNumber = m.cols();
-    for (int i = 0; i < result.rows(); i++)
-        for (int j = 0; j < result.cols(); j++)
+    for (int i = 0; i < result.rows(); i++) {
+        for (int j = 0; j < result.cols(); j++) {
             result(i, j) = result(i, j) / (samplesNumber - 1);
+        }
+    }
     return result;
 }
 

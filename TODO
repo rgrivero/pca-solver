@@ -1,2 +1,9 @@
 TODO:
++ obsluga wyjatkow w PcaSolver
++ testy jednostkowe (np. klasa pochodna po PcaSolver + testy z BOOST minimal)
++ interfejs (raczej tekstowy, chociaz moze cos w Qt...)
++ przetwarzanie jednego ze zbiorow danych ciagi aminokwasow vs. enzymy -> wykazanie ze PCA zredukowalo wymiary (moze tu jakis interfejs ladny?)
++ dokumentacja
+? zbudowanie biblioteki SharedLibrary (patrz: dokumentacja scons'a)
+? prosty zestaw danych do prezentacji dzialania PCA (to moze byc test jednostkowy)
 

@@ -44,6 +44,7 @@ MatrixXf PcaSolver::subtractMeanFromRows(const MatrixXf &m)
 MatrixXf PcaSolver::calculateCovarianceMatrix(const MatrixXf &m)
 {
     MatrixXf result = (m * m.transpose());
+    cout << "m * m.trans:\n" << result << endl;
     int samplesNumber = m.cols();
     for (int i = 0; i < result.rows(); i++) {
         for (int j = 0; j < result.cols(); j++) {

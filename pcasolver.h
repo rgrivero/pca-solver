@@ -3,6 +3,13 @@
 
 #include "Eigen/Dense"
 #include "sortvector.h"
+#include <stdexcept>
+
+class PcaNotPerformedYet : public std::logic_error { 
+public:
+	PcaNotPerformedYet() : std::logic_error("PCA was not performed yet. Invoke performPcaOnData() first.")
+	{}
+};
 
 class PcaSolver {
 public:
@@ -13,13 +20,13 @@ public:
 
     MatrixXf const getReducedData()
     {
-        // TODO exception if not mPcaPerformed
+        if (!mPcaPerformed) throw PcaNotPerformedYet();
         return mReducedData;
     }
 
     MatrixXf const getPrincipalComponentsMatrix()
     {
-        // TODO exception if not mPcaPerformed
+        if (!mPcaPerformed) throw PcaNotPerformedYet();
         return mPrincipalComponentsMatrix;
     }
 

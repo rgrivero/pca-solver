@@ -5,29 +5,47 @@ using namespace std;
 
 MatrixXf PcaSolver::performPcaOnData(const MatrixXf& data)
 {
-    cout << "original data:\n" << data << endl;
+    calculateEigen(data);
+    performPcaUsingEigenvectors();
+    return mReducedData;
+}
+
+void PcaSolver::calculateEigen(const MatrixXf& data)
+{
+    if (mDebug) cout << "original data:\n" << data << endl;
     MatrixXf zeroMeanData = subtractMeanFromRows(data);
-    cout << "zero mean data:\n" << zeroMeanData << endl;
+    mOriginalData = data;
+    if (mDebug) cout << "zero mean data:\n" << zeroMeanData << endl;
     MatrixXf covarianceMatrix =
         calculateCovarianceMatrix(zeroMeanData);
+    if (mDebug) cout << "covariance:\n" << covarianceMatrix << endl;
     SelfAdjointEigenSolver<MatrixXf> eigensolver(covarianceMatrix);
     if (eigensolver.info() != Success) {
         abort();
     }
-    VectorXf eigenvalues = eigensolver.eigenvalues();
-    MatrixXf eigenvectors = eigensolver.eigenvectors();
-    cout << "eigenvalues:\n" << eigenvalues << endl;
-    cout << "eigenvectors:\n" << eigenvectors << endl;
+    mEigenvalues = eigensolver.eigenvalues();
+    mEigenvectors = eigensolver.eigenvectors();
+    if (mDebug) cout << "eigenvalues:\n" << mEigenvalues << endl;
+    if (mDebug) cout << "eigenvectors:\n" << mEigenvectors << endl;
+    mEigenCalculated = true;
+}
+
+void PcaSolver::setMinAbsCorrelation(double value)
+{
+    mMinAbsCorrelation = abs(value);
+}
+
+MatrixXf PcaSolver::performPcaUsingEigenvectors()
+{
+    if (!mEigenCalculated) throw EigenNotCalculated();
     mPrincipalComponentsMatrix = 
-        sortEigenvectorsAccordingToEigenvalues(eigenvectors, eigenvalues);
-    //mPrincipalComponentsMatrix = eigenvectors;
-    cout << "pc:\n" << mPrincipalComponentsMatrix << endl;
-    cout << "pc':\n" << mPrincipalComponentsMatrix.transpose() <<endl;
-    mReducedData = mPrincipalComponentsMatrix.transpose() * data;        
+        sortEigenvectorsAccordingToEigenvalues(mEigenvectors, mEigenvalues, mMinAbsCorrelation);
+    if (mDebug) cout << "pc:\n" << mPrincipalComponentsMatrix << endl;
+    if (mDebug) cout << "pc':\n" << mPrincipalComponentsMatrix.transpose() <<endl;
+    mReducedData = mPrincipalComponentsMatrix.transpose() * mOriginalData;
     mPcaPerformed = true;
     return mReducedData;
 }
-
 
 MatrixXf PcaSolver::subtractMeanFromRows(const MatrixXf &m)
 {
@@ -44,7 +62,6 @@ MatrixXf PcaSolver::subtractMeanFromRows(const MatrixXf &m)
 MatrixXf PcaSolver::calculateCovarianceMatrix(const MatrixXf &m)
 {
     MatrixXf result = (m * m.transpose());
-    cout << "m * m.trans:\n" << result << endl;
     int samplesNumber = m.cols();
     for (int i = 0; i < result.rows(); i++) {
         for (int j = 0; j < result.cols(); j++) {
@@ -55,14 +72,24 @@ MatrixXf PcaSolver::calculateCovarianceMatrix(const MatrixXf &m)
 }
 
 MatrixXf PcaSolver::sortEigenvectorsAccordingToEigenvalues(
-    const MatrixXf &eigenvectors, const VectorXf &eigenvalues)
+    const MatrixXf &eigenvectors, const VectorXf &eigenvalues,
+    double minAbsCorrelation)
 {
     SortVector sortVector(eigenvalues, SortVector::descend);
     VectorXi sortedIndices = sortVector.getSortedIndices();
+    VectorXf sortedValues = sortVector.getSortedVector();
     MatrixXf sortedVectors(eigenvectors.rows(), eigenvectors.cols());
+    MatrixXf zerocol(eigenvectors.rows(), 1);
+    for (int i = 0; i < eigenvectors.rows(); i++) {
+        zerocol(i, 0) = 0;
+    }
     for (int i = 0; i < sortedIndices.size(); i++) {
         int index = sortedIndices(i);
-        sortedVectors.col(i) = eigenvectors.col(index);
+        if (sortedValues(i) >= minAbsCorrelation) {
+            sortedVectors.col(i) = eigenvectors.col(index);
+        } else {
+            sortedVectors.col(i) = zerocol;
+        }
     }
     return sortedVectors;
 }

@@ -4,6 +4,9 @@ TODO:
 + interfejs (raczej tekstowy, chociaz moze cos w Qt...) [DONE, 120102]
 + przetwarzanie jednego ze zbiorow danych ciagi aminokwasow vs. enzymy -> wykazanie ze PCA zredukowalo wymiary (moze tu jakis interfejs ladny?)
 + dokumentacja
++ redukcja wymiarow powinna zwracac dane o mniejszej ilosci wymiarow, a nie dane z zerami
++ GUI: blokada suwaka i przycisku save gdy nie zaladowano danych
+
+? kompilacja qt przy uzyciu scons'a (w wersji prostackiej - podpiecie make'a. nie wszystko bedzie sie czyscic)
 ? zbudowanie biblioteki SharedLibrary (patrz: dokumentacja scons'a)
 ? prosty zestaw danych do prezentacji dzialania PCA (to moze byc test jednostkowy)
-

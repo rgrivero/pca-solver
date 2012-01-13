@@ -133,7 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(mScene);
     ui->graphicsView->show();
 
-    mPcaSolver = new PcaSolver(true);
+    mPcaSolver = new PcaSolver(false);
 }
 
 MainWindow::~MainWindow()

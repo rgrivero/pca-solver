@@ -39,14 +39,12 @@ void MainWindow::loadDataClicked()
         }
     }
 
-    std::cout << *mOriginalData << std::endl;
     mRowsAreFeatures = ui->rowsCheckBox->isChecked();
     if (!mRowsAreFeatures) {
         MatrixXf *tempMatrix = new MatrixXf(nColumns, nRows);
         *tempMatrix = mOriginalData->transpose();
         delete mOriginalData;
         mOriginalData = tempMatrix;
-        std::cout << *mOriginalData << std::endl;
     }
     file.close();
 

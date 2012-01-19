@@ -33,15 +33,12 @@ private:
     void updatePlot(std::vector<double> values);
 
     Ui::MainWindow *ui;
-    MatrixXf *mOriginalData;
-    MatrixXf *mProcessedData;
-    MatrixXf *mPrincipalComponents;
     QGraphicsScene *mScene;
     Plot *mPlot;
+    PcaSolver *mPcaSolver;
     int mSliderMin;
     int mSliderMax;
-    PcaSolver *mPcaSolver;
-    double mMinCovariance;
+    double mMinVariance;
     bool mRowsAreFeatures;
 };
 

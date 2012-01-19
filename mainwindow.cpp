@@ -30,25 +30,27 @@ void MainWindow::loadDataClicked()
     int nRows = rowList.size();
     int nColumns = rowList.at(0).size();
 
-    mOriginalData = new MatrixXf(nRows, nColumns);
+    MatrixXf *originalData = new MatrixXf(nRows, nColumns);
     for (int i = 0; i < rowList.size(); i++) {
         QStringList row = rowList[i];
         assert(row.size() == nColumns);
         for (int j = 0; j < row.size(); j++) {
-            (*mOriginalData)(i, j) = row.at(j).toDouble();
+            (*originalData)(i, j) = row.at(j).toDouble();
         }
     }
 
     mRowsAreFeatures = ui->rowsCheckBox->isChecked();
     if (!mRowsAreFeatures) {
         MatrixXf *tempMatrix = new MatrixXf(nColumns, nRows);
-        *tempMatrix = mOriginalData->transpose();
-        delete mOriginalData;
-        mOriginalData = tempMatrix;
+        *tempMatrix = originalData->transpose();
+        delete originalData;
+        originalData = tempMatrix;
     }
     file.close();
 
-    mPcaSolver->calculateEigen(*mOriginalData);
+    mPcaSolver->calculateEigen(*originalData);
+    delete originalData;
+
     VectorXf eigenvalues = mPcaSolver->getAbsEigenvalues();
 
     std::vector<double> eigenvaluesStdVector;
@@ -116,12 +118,12 @@ void MainWindow::minCorrelationChanged(int value)
     double plotMin = mPlot->getMinY();
     double shift = plotMin;
     double scale = (plotMax - plotMin) / (mSliderMax - mSliderMin);
-    mMinCovariance = (static_cast<double>(value) * scale) + shift;
+    mMinVariance = (static_cast<double>(value) * scale) + shift;
 
-    ui->minValueLabel->setNum(mMinCovariance);
-    mPcaSolver->setMinAbsCovariance(mMinCovariance);
+    ui->minValueLabel->setNum(mMinVariance);
+    mPcaSolver->setMinAbsCovariance(mMinVariance);
 
-    mPlot->putHorizontalMark(mMinCovariance, qRgb(255,0 ,0));
+    mPlot->putHorizontalMark(mMinVariance, qRgb(255,0 ,0));
     mScene->addPixmap(mPlot->getPixmap());
     ui->graphicsView->setScene(mScene);
     ui->graphicsView->show();

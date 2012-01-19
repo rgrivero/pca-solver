@@ -27,17 +27,38 @@ public:
 class PcaSolver {
 public:
     PcaSolver(bool printOutput = false) : mDebug(printOutput),
-        mEigenCalculated(false), mPcaPerformed(false), mMinAbsCorrelation(0)
+        mEigenCalculated(false), mPcaPerformed(false), mMinAbsCovariance(0)
     {}
 
+    /** Performs PCA on provided data.
+     * @param data matrix of input data, rows = features
+     * @return reduced dimensions data
+     */
     MatrixXf performPcaOnData(const MatrixXf& data);
 
+    /** Calulates eigenvectors and eigenvalues,
+     * stores given data in class. 
+     * Should be followed by performPcaUsingEigenvectors().
+     * @param data matrix of input data, rows = features
+     */ 
     void calculateEigen(const MatrixXf& data);
-    
+  
+    /** Sets min absolute value of covariance for
+     * a feature to be selected in PCA.
+     * Features with smaller abs eigenvalue will be
+     * ommited by performPcaUsingEigenVectors().
+     * Should be proceeded by calculateEigen().
+     * @param value min absolute value of covariance
+     */
+    void setMinAbsCovariance(double value);
+
+    /** Second step of PCA analysis, takes into account
+     * min absolute value of covariance, if set.
+     * Must be proceeded by calculateEigen().
+     * @return reduced dimensions data
+     */
     MatrixXf performPcaUsingEigenvectors();
     
-    void setMinAbsCorrelation(double value);
-
     MatrixXf const getReducedData()
     {
         if (!mPcaPerformed) throw PcaNotPerformedYet();
@@ -50,14 +71,16 @@ public:
         return mPrincipalComponentsMatrix;
     }
 
-    VectorXf const getEigenvalues()
+    VectorXf const getAbsEigenvalues()
     {
         if (!mEigenCalculated) throw EigenNotCalculated();
-        return mEigenvalues;
+        return absMatrix(mEigenvalues);
     }
 
 protected:
-    static MatrixXf subtractMeanFromRows(const MatrixXf &m);
+    static MatrixXf normalizeRows(const MatrixXf &m);
+    
+    static MatrixXf absMatrix(const MatrixXf& data);
 
     static MatrixXf calculateCovarianceMatrix(const MatrixXf &m);
 
@@ -69,7 +92,7 @@ protected:
         bool mDebug;
         bool mEigenCalculated;
         bool mPcaPerformed;
-        double mMinAbsCorrelation;
+        double mMinAbsCovariance;
         MatrixXf mOriginalData;
         MatrixXf mEigenvectors;
         VectorXf mEigenvalues;

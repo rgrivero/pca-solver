@@ -8,7 +8,7 @@ using namespace Eigen;
 
 class PcaSolver_Test : public PcaSolver {
 public:
-	static void subtractMeanFromRows_test()
+	static void normalizeRows_test()
 	{
 		MatrixXf m(3, 4);
 		m << 1, 2, 3, 4,
@@ -20,7 +20,7 @@ public:
 			 -1.5, -0.5, 0.5, 1.5,
 			 1.5, 0.5, -0.5, -1.5;
 			 
-		MatrixXf m_res = PcaSolver::subtractMeanFromRows(m);
+		MatrixXf m_res = PcaSolver::normalizeRows(m);
 		std::cout << m_res;
 			 
 		BOOST_CHECK(m_res == m_exp);	
@@ -39,7 +39,7 @@ public:
 	
 	static void total_test()
 	{
-		subtractMeanFromRows_test();
+		normalizeRows_test();
 		calculateCovarianceMatrix_test();
 		sortEigenvectorsAccordingToEigenvalues_test();
 	}

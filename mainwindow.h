@@ -41,7 +41,8 @@ private:
     int mSliderMin;
     int mSliderMax;
     PcaSolver *mPcaSolver;
-    double mMinCorrelation;
+    double mMinCovariance;
+    bool mRowsAreFeatures;
 };
 
 #endif // MAINWINDOW_H

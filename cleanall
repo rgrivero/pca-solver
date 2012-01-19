@@ -4,3 +4,4 @@ scons --clean
 make clean
 rm Makefile
 rm pca-gui
+rm -r doc

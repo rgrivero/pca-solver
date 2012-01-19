@@ -76,7 +76,11 @@ MatrixXf PcaSolver::normalizeRows(const MatrixXf &m)
             zeroMeanRow(j) = m(i, j) - rowMean;
         }
         double rowNorm = zeroMeanRow.norm();
-        result.row(i) = zeroMeanRow / rowNorm;
+        if (rowNorm != 0) {
+            result.row(i) = zeroMeanRow / rowNorm;
+        } else {
+            result.row(i) = zeroMeanRow;
+        }
     }
     return result;
 }

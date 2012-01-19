@@ -6,6 +6,10 @@
 #include <vector>
 #include <iostream>
 
+/** Class for plotting data.
+  * Provides automatical coordinates scaling and shifting,
+  * according to max and min values of provided data.
+  */
 class Plot
 {
 public:
@@ -17,6 +21,9 @@ public:
     int valueToPositionX(double x);
     int valueToPositionY(double y);
     QPixmap getPixmap();
+
+    /** Puts a single horizontal mark on plot. Putting next mark undoes the last one
+      */
     void putHorizontalMark(double y, QRgb color);
     int countPointsOverMark();
     void clear();

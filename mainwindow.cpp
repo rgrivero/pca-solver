@@ -30,31 +30,52 @@ void MainWindow::loadDataClicked()
     int nRows = rowList.size();
     int nColumns = rowList.at(0).size();
 
-    mOriginalData = new MatrixXf(nColumns, nRows); // perform transpose
+    mOriginalData = new MatrixXf(nRows, nColumns);
     for (int i = 0; i < rowList.size(); i++) {
         QStringList row = rowList[i];
         assert(row.size() == nColumns);
         for (int j = 0; j < row.size(); j++) {
-            (*mOriginalData)(j, i) = row.at(j).toDouble(); // perform transpose
+            (*mOriginalData)(i, j) = row.at(j).toDouble();
         }
+    }
+
+    std::cout << *mOriginalData << std::endl;
+    mRowsAreFeatures = ui->rowsCheckBox->isChecked();
+    if (!mRowsAreFeatures) {
+        MatrixXf *tempMatrix = new MatrixXf(nColumns, nRows);
+        *tempMatrix = mOriginalData->transpose();
+        delete mOriginalData;
+        mOriginalData = tempMatrix;
+        std::cout << *mOriginalData << std::endl;
     }
     file.close();
 
     mPcaSolver->calculateEigen(*mOriginalData);
-    VectorXf eigenvalues = mPcaSolver->getEigenvalues();
+    VectorXf eigenvalues = mPcaSolver->getAbsEigenvalues();
+
     std::vector<double> eigenvaluesStdVector;
     for (int i = 0; i < eigenvalues.size(); i++) {
             eigenvaluesStdVector.push_back(eigenvalues(i));
     }
-    //sort(eigenvaluesStdVector.begin(), eigenvaluesStdVector.end());
     updatePlot(eigenvaluesStdVector);
+
+    ui->minValueSlider->setEnabled(true);
+    ui->saveDataButton->setEnabled(true);
 }
 
 void MainWindow::saveDataClicked()
 {
     mPcaSolver->performPcaUsingEigenvectors();
     MatrixXf reducedDataT = mPcaSolver->getReducedData();
-    MatrixXf reducedData = reducedDataT.transpose();
+    MatrixXf *reducedData;
+    if (!mRowsAreFeatures) {
+        reducedData = new MatrixXf(reducedDataT.cols(), reducedDataT.rows());
+        *reducedData = reducedDataT.transpose();
+    } else {
+        reducedData = new MatrixXf(reducedDataT.rows(), reducedDataT.cols());
+        *reducedData = reducedDataT;
+    }
+
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save as"), "", "");
     QFile file(fileName);
@@ -63,12 +84,13 @@ void MainWindow::saveDataClicked()
     QTextStream outStream(&file);
 
 
-    for (int i = 0; i < reducedData.rows(); i++) {
-        for (int j = 0; j < reducedData.cols() - 1; j++) {
-            outStream << reducedData(i, j) << ",";
+    for (int i = 0; i < reducedData->rows(); i++) {
+        for (int j = 0; j < reducedData->cols() - 1; j++) {
+            outStream << (*reducedData)(i, j) << ",";
         }
-        outStream << reducedData(i, reducedData.cols() - 1) << '\n';
+        outStream << (*reducedData)(i, reducedData->cols() - 1) << '\n';
     }
+    delete reducedData;
 }
 
 void MainWindow::getPlotLabels()
@@ -96,12 +118,12 @@ void MainWindow::minCorrelationChanged(int value)
     double plotMin = mPlot->getMinY();
     double shift = plotMin;
     double scale = (plotMax - plotMin) / (mSliderMax - mSliderMin);
-    mMinCorrelation = (static_cast<double>(value) * scale) + shift;
+    mMinCovariance = (static_cast<double>(value) * scale) + shift;
 
-    ui->minValueLabel->setNum(mMinCorrelation);
-    mPcaSolver->setMinAbsCorrelation(mMinCorrelation);
+    ui->minValueLabel->setNum(mMinCovariance);
+    mPcaSolver->setMinAbsCovariance(mMinCovariance);
 
-    mPlot->putHorizontalMark(mMinCorrelation, qRgb(255,0 ,0));
+    mPlot->putHorizontalMark(mMinCovariance, qRgb(255,0 ,0));
     mScene->addPixmap(mPlot->getPixmap());
     ui->graphicsView->setScene(mScene);
     ui->graphicsView->show();
@@ -133,7 +155,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(mScene);
     ui->graphicsView->show();
 
-    mPcaSolver = new PcaSolver(false);
+    bool pcaSolverDebugMode = false;
+    mPcaSolver = new PcaSolver(pcaSolverDebugMode);
 }
 
 MainWindow::~MainWindow()

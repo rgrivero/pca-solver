@@ -3,3 +3,4 @@
 scons
 qmake
 make
+doxygen doxygen.conf

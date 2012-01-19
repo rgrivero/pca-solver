@@ -34,6 +34,9 @@
     </property>
    </widget>
    <widget class="QSlider" name="minValueSlider">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>730</x>
@@ -51,7 +54,7 @@
      <rect>
       <x>760</x>
       <y>40</y>
-      <width>67</width>
+      <width>121</width>
       <height>17</height>
      </rect>
     </property>
@@ -64,12 +67,12 @@
      <rect>
       <x>760</x>
       <y>320</y>
-      <width>67</width>
+      <width>121</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>0</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loadDataButton">
@@ -77,7 +80,7 @@
      <rect>
       <x>80</x>
       <y>370</y>
-      <width>97</width>
+      <width>91</width>
       <height>27</height>
      </rect>
     </property>
@@ -149,7 +152,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="correlationLabel">
+   <widget class="QLabel" name="covarianceLabel">
     <property name="geometry">
      <rect>
       <x>760</x>
@@ -159,7 +162,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Min. correlation:</string>
+     <string>Min. covariance:</string>
     </property>
    </widget>
    <widget class="QLabel" name="selectedFeaturesNumLabel">
@@ -179,6 +182,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="saveDataButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -189,6 +195,19 @@
     </property>
     <property name="text">
      <string>Run PCA and save</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="rowsCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>370</y>
+      <width>311</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>rows are features (affects only load data)</string>
     </property>
    </widget>
   </widget>

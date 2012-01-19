@@ -8,8 +8,8 @@
 
 using namespace Eigen;
 
-/* Provides sorting for VectorXf type. Sorting is done in constructor.
-Sorted vector and sorted original indices are available */
+/** Provides sorting for VectorXf type. Sorting is done in constructor.
+  * Sorted vector and sorted original indices are available */
 class SortVector {
 public:
     enum SortType {ascend, descend};

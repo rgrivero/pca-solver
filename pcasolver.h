@@ -24,6 +24,11 @@ public:
     {}
 };
 
+/** Class for PCA calculation, provides methods
+  * for single and multiple step processing.
+  * If min absolute covariance value is provided,
+  * reduces dimensions of output data.
+  */
 class PcaSolver {
 public:
     PcaSolver(bool printOutput = false) : mDebug(printOutput),

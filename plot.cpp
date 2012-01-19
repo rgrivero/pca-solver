@@ -30,7 +30,7 @@ void Plot::putHorizontalMark(double y, QRgb color)
 {
     // undo previous line
     if (mUndoHorizontalMarkPixels.size() != 0) {
-        for (int i = 0; i < mUndoHorizontalMarkPixels.size(); i++) {
+        for (unsigned int i = 0; i < mUndoHorizontalMarkPixels.size(); i++) {
             mImage->setPixel(i, mUndoHorizontalMarkY, mUndoHorizontalMarkPixels[i]);
         }
         mUndoHorizontalMarkPixels.clear();
@@ -48,7 +48,7 @@ void Plot::putHorizontalMark(double y, QRgb color)
 int Plot::countPointsOverMark()
 {
     int count = 0;
-    for (int i = 0; i < mValues.size(); i++) {
+    for (unsigned int i = 0; i < mValues.size(); i++) {
         if (mValues[i] >= mHorizontalMarkValue) {
             count++;
         }
@@ -71,7 +71,7 @@ void Plot::importDoubleValues(const std::vector<double> &values)
 */
     mMinY = mValues[0];
     mMaxY = mValues[0];
-    for (int i = 1; i < mValues.size(); i++) {
+    for (unsigned int i = 1; i < mValues.size(); i++) {
         if (mValues[i] > mMaxY) {
             mMaxY = mValues[i];
         }
@@ -88,7 +88,7 @@ void Plot::importDoubleValues(const std::vector<double> &values)
     std::cout << "shift x: " << mShiftX << " scale x: " << mScaleX << std::endl;
     std::cout << "shift y: " << mShiftY << " scale y: " << mScaleY << std::endl;
 
-    for (int i = 0; i < mValues.size(); i++) {
+    for (unsigned int i = 0; i < mValues.size(); i++) {
         int pixX = valueToPositionX(i);
         int pixY = valueToPositionY(mValues[i]);
         putCross(pixX, pixY, mPlotColor);

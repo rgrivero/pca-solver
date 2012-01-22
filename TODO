@@ -1,6 +1,4 @@
 TODO:
-+ testy jednostkowe (np. klasa pochodna po PcaSolver + testy z BOOST minimal) [UNDER DEV]
-+ interfejs tekstowy nie potrzebujący ilości wierszy i kolumn w pliku
 + dokumentacja końcowa - napisać
 + dokumentacja doxygen - uzupełnić krótkie opisy klas
 

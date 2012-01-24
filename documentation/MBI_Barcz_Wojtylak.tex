@@ -30,7 +30,7 @@ W trakcie prac projektowych stworzono:
 \end{enumerate}
 
 Wszystkie programy napisane zostały w języku C++. Algorytm PCA zaimplementowany został z wykorzystaniem biblioteki \emph{Eigen}\footnote{\url{http://eigen.tuxfamily.org/}}, służącej do przeprowadzania obliczeń algebry liniowej. Wykorzystane zostały funkcje przeprowadzające operacje na macierzach, obliczające wektory i wartości własne. Algorytm zaimplementowano posługując się opisem przedstawionym w (Shlens; 2009) z uwzględnieniem istotnych różnic, 
-występujących w materiałach wykładowych MBI (normalizacja danych wejściowych). 
+występujących w materiałach wykładowych MBI (normalizacja danych wejściowych). Ze względu na brak biblioteki \emph{Eigen} w wersji 3 w powszechnie używanych dystrybucjach systemu Linux, do projektu został załączony kod biblioteki w wersji 3.0.4 (nie wymaga kompilacji).
 
 \subsection{Interfejs konsolowy}
 
@@ -40,7 +40,7 @@ Program konsolowy wykonuje algorytm PCA na macierzy przekazanej przez standardow
 ./pca-solver < testdata/input_ex1
 \end{verbatim}
 
-\noindent Gdzie w pliku \emph{input} znajduje się macierz, której kolejne wiersze rozdzielone są znakami nowej linii, a elementy - przecinkami. Poniższy przykład prezentuje opisany format dla macierzy $4 \times 5$:
+\noindent gdzie w pliku \emph{input} znajduje się macierz, której kolejne wiersze rozdzielone są znakami nowej linii, a elementy - przecinkami. Poniższy przykład prezentuje opisany format dla macierzy $4 \times 5$:
 
 \begin{verbatim}
 1, 2, 3, 4, 5

@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage[pdftex, bookmarks=true, colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black]{hyperref}
+
+\begin{document}
+
+\title{MBI - implementacja algorytmu PCA}
+\author{Aleksy Barcz \\ Wiktor Wojtylak}
+
+\maketitle
+
+\section{Cel projektu}
+
+Celem projektu była implementacja algorytmu PCA (\emph{Principal Component Analysis}, analiza składowych głównych) i wykazanie jego działania na rzeczywistych danych biologicznych.
+
+\section{Realizacja}
+
+W trakcie prac projektowych stworzono:
+
+\begin{enumerate}
+
+\item{implementację algorytmu PCA}
+\item{interfejs konsolowy}
+\item{interfejs graficzny}
+
+\end{enumerate}
+
+Wszystkie programy napisane zostały w języku C++. Algorytm PCA zaimplementowany został z wykorzystaniem biblioteki \emph{Eigen}\footnote{\url{http://eigen.tuxfamily.org/}}, służącej do przeprowadzania obliczeń algebry liniowej. Wykorzystane zostały funkcje przeprowadzające operacje na macierzach, obliczające wektory i wartości własne. Algorytm zaimplementowano posługując się opisem przedstawionym w (Shlens; 2009) z uwzględnieniem istotnych różnic, 
+występujących w materiałach wykładowych MBI (normalizacja danych wejściowych). 
+
+\subsection{Interfejs konsolowy}
+
+Program konsolowy wykonuje algorytm PCA na macierzy przekazanej przez standardowe wejście. Aby uruchomić program należy wykonać polecenie:
+
+\begin{verbatim}
+./pca-solver < testdata/input_ex1
+\end{verbatim}
+
+\noindent Gdzie w pliku \emph{input} znajduje się macierz, której kolejne wiersze rozdzielone są znakami nowej linii, a elementy - przecinkami. Poniższy przykład prezentuje opisany format dla macierzy $4 \times 5$:
+
+\begin{verbatim}
+1, 2, 3, 4, 5
+17, 120, 32, -7, -10
+2, 4, 6, 8, 10
+3, 6, 9, 12, 15
+\end{verbatim}
+
+\noindent W wyniku działania programu na standardowe wyjście wypisywany jest wynik redukcji wymiarów, wraz z wynikami wszystkich kroków pośrednich działania algorytmu PCA.
+
+\subsection{Interfejs graficzny}
+
+Interfejs graficzny pozwala na:
+\begin{enumerate}
+\item{Wczytanie danych numerycznych w postaci kolumnowej / wierszowej.}
+\item{Ogląd wartości wariancji atrybutów na wykresie, po diagonalizacji macierzy kowariancji.}
+\item{Wybór minimalnej wartości wariancji, którą musi osiągnąć atrybut, aby zostać uznany za istotny.}
+\item{Redukcję wymiarów wejściowych danych przy użyciu algorytmu PCA, z uwzględnieniem minimalnej wartości wariancji oraz zapisanie danych o zmniejszonej liczbie wymiarów do pliku.}
+\end{enumerate}
+
+\subsection{Testy}
+
+Aby zweryfikować wiarygodność poszczególnych metod implementujących algorytm napisano testy jednostkowe. Jako bibliotekę zastosowano \emph{Boost.Test minimal}. Testy zapisane zostały w pliku \emph{test.cpp}, kompilowane są wraz z interfejsem konsolowym projektu programem \emph{scons} (patrz punkt \ref{lab_kompilacja}), oraz wykonywane automatycznie po zakończeniu kompilacji.
+
+\subsection{Kompilacja} \label{lab_kompilacja}
+
+\paragraph{Wersja konsolowa.}
+Wersję konsolową programu można skompilować przy pomocy programy \emph{scons}\footnote{\url{http://scons.org/}} (plik \emph{SConstruct}). W wyniku kompilacji powstają dwa programy: \emph{pca-solver}, który pozwala na wykonanie algorytmu PCA przy użyciu interfejsu konsolowego oraz program \emph{test}, który wykonuje wszystkie testy jednostkowe sprawdzające poprawność metod implementujących algorytm PCA.
+
+\paragraph{Interfejs graficzny.}
+Wersję z interfejsem graficznym Qt można skompilować przy pomocy środowiska \emph{Qt-creator} lub sekwencji komend: 
+\begin{verbatim}
+qmake
+make
+\end{verbatim}
+
+\paragraph{Dokumentacja doxygen.}
+Kompilacja dokumentacji doxygen do formatu html wywoływana jest poleceniem:
+\begin{verbatim}
+doxygen doxygen.conf
+\end{verbatim}
+
+\paragraph{Kompilacja łączna (Linux).}
+Aby zbudować wszystkie części projektu naraz, można posłużyć się skryptem \emph{buildall}. W przypadku dalszego rozwoju projektu należałoby zawrzeć całą kompilację w skrypcie \emph{SConstruct}, jednakże ze względu na trudności z zawarciem kompilacji projektu \emph{Qt} oraz dokumentacji \emph{doxygen}, nie zostało to zaimplementowane w ramach projektu.
+
+\section{Dane biologiczne}
+
+Użyte w projekcie dane biologiczne stanowią dziewięcioelementowe sekwencje aminokwasów, dostarczone przez Centrum Onkologii w Warszawie wraz z informacją, z jakim enzymem dana sekwencja reaguje bądź nie (relacja \emph{fosforylacji}). Na potrzeby projektu został wybrany zbiór danych (przykłady pozytywne i negatywne) dla jednego enzymu -- \emph{IGF1R}. Dane te zostały załączone do projektu (\emph{AMS3data}), zarówno w oryginalnej postaci, jak i po zastąpieniu symboli aminokwasów wartościami własności fizykochemicznych z AAindex (tabela wartości załączona w formie pliku \emph{.xls}). Przykładowe ciągi aminokwasów:
+\begin{verbatim}
+QKRPSQRSK
+PSQRSKYLA
+\end{verbatim}
+\noindent Na wykresie wariancji atrybutów, po diagonalizacji macierzy kowariancji, można zauważyć:
+\begin{itemize}
+\item{Dla zbioru danych pozytywnych (\emph{AMS3data/IGF1R\_num.pos}) - wyraźną przewagę istotności 23ech atrybutów nad pozostałymi.}
+\item{Dla zbioru danych negatywnych (\emph{AMS3data/IGF1R\_num.neg}) - krzywą w postaci łuku - efekt metody tworzenia tego zbioru danych (losowa generacja).}
+\end{itemize}
+
+\section{Wykaz literatury}
+
+\begin{enumerate}
+
+\item Shlens, J. (2009). \emph{A Tutorial on Principal Component Analysis}.
+\item Nowak, R.M. (2012). \emph{Slajdy do wykładu MBI}.
+
+\end{enumerate}
+
+\end{document}

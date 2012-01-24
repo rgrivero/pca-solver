@@ -1,7 +1,3 @@
 TODO:
-+ dokumentacja końcowa - napisać
-+ dokumentacja doxygen - uzupełnić krótkie opisy klas
-
-? kompilacja qt przy uzyciu scons'a (w wersji prostackiej - podpiecie make'a. nie wszystko bedzie sie czyscic)
-? kompilacja doxygen przy uzyciu scons'a
-? prosty zestaw danych do prezentacji dzialania PCA (to moze byc test jednostkowy)
++ kompilacja qt przy uzyciu scons'a
++ kompilacja doxygen przy uzyciu scons'a

@@ -14,6 +14,10 @@ class SortVector {
 public:
     enum SortType {ascend, descend};
 public:
+    /** Constructor sorts given vector, according to sorting rule.
+      * @param vector vector to be sorted
+      * @param type type of sort (ascend, descend)
+      */
     SortVector(const VectorXf& vector, const SortType& type = descend);
 
     VectorXf const getSortedVector()

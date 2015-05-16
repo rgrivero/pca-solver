@@ -1,0 +1,1 @@
+Library for performing Principal Component Analysis using Eigen (http://eigen.tuxfamily.org/).
